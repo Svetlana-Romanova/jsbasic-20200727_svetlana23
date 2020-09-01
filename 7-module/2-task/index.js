@@ -28,12 +28,9 @@ export default class Modal {
   }
 
   open() {
-    let btn = document.querySelector('.button');
-    btn.addEventListener('click', () => {
-      let body = document.querySelector('body');
-      body.append(this.elem);
-      body.classList.add('is-modal-open');
-    });
+    let body = document.querySelector('body');
+    body.append(this.elem);
+    body.classList.add('is-modal-open');
   }
 
   setTitle(title) {
@@ -50,7 +47,7 @@ export default class Modal {
   close() {
     this.elem.remove();
     let body = document.querySelector('body');
-    body.classList.remove('.is-modal-open');
+    body.classList.remove('is-modal-open');
   }
 
   closeX() {
@@ -61,9 +58,9 @@ export default class Modal {
   closeEsc(elem) {
     let body = document.querySelector('body');
     body.addEventListener('keydown', function(event) {
-      if (event.code == 'Escape') {
+      if (event.code === 'Escape') {
         elem.remove();
-        body.classList.remove('.is-modal-open');
+        body.classList.remove('is-modal-open');
       }
     });
   }
