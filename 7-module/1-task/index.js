@@ -4,18 +4,20 @@ export default class RibbonMenu {
   constructor(categories) {
     this.categories = categories;
     this.elem = document.createElement('div');
+    
     this.render(categories);
-    this.scr();
+    this.scroll(this.elem);
+    this.elem.addEventListener('click', (event) => this.chooseCat(event));
   }
 
   render(arr) {
     this.elem.classList.add('ribbon');
     this.elem.innerHTML = `
-    <button class="ribbon__arrow ribbon__arrow_left ribbon__arrow_visible">
+    <button class="ribbon__arrow ribbon__arrow_left">
       <img src="/assets/images/icons/angle-icon.svg" alt="icon">
     </button>
     <nav class="ribbon__inner"></nav>
-    <button class="ribbon__arrow ribbon__arrow_right">
+    <button class="ribbon__arrow ribbon__arrow_right ribbon__arrow_visible">
       <img src="/assets/images/icons/angle-icon.svg" alt="icon">
     </button>
     `;
@@ -31,58 +33,60 @@ export default class RibbonMenu {
     });
   }
 
-  scr(a, b) {
-    let nav = this.elem.querySelector('.ribbon__inner');
-    let arrowLeft = this.elem.querySelector('.ribbon__arrow_left');
-    let arrowRight = this.elem.querySelector('.ribbon__arrow_right');
+  scroll(elem) {
+    let nav = elem.querySelector('.ribbon__inner');
+    let arrowLeft = elem.querySelector('.ribbon__arrow_left');
+    let arrowRight = elem.querySelector('.ribbon__arrow_right');
 
-    let scrollWidth = nav.scrollWidth;
-    let scrollLeft = nav.scrollLeft;
-    let clientWidth = nav.clientWidth;
-    let scrollRight = scrollWidth - scrollLeft - clientWidth;
+    arrowLeft.addEventListener('click', moveLeft);
+    arrowRight.addEventListener('click', moveRight);
+    nav.addEventListener('scroll', hideArrow);
 
-    arrowLeft.classList.toggle('ribbon__arrow_visible');
-    arrowRight.classList.toggle('ribbon__arrow_visible');
-
-    arrowLeft.addEventListener('click', function() {
+    function moveLeft() {
       nav.scrollBy(-350, 0);
-      scrollLeft = nav.scrollLeft;
-      scrollRight = scrollWidth - scrollLeft - clientWidth;
-      if (scrollLeft == 0) {
+    }
+
+    function moveRight() {
+      nav.scrollBy(350, 0);
+    }
+
+    function hideArrow() {
+      let scrollWidth = nav.scrollWidth;
+      let clientWidth = nav.clientWidth;
+      let scrollLeft = nav.scrollLeft;
+      let scrollRight = scrollWidth - scrollLeft - clientWidth;
+
+      if (scrollLeft < 1) {
         arrowLeft.classList.remove('ribbon__arrow_visible');
         arrowRight.classList.add('ribbon__arrow_visible');
-      } else if (scrollRight == 0) {
-        arrowRight.classList.remove('ribbon__arrow_visible');
-        arrowLeft.classList.remove('ribbon__arrow_visible');
-      } else {
-        if (!arrowLeft.classList.contains('ribbon__arrow_visible')) {
-          arrowLeft.classList.toggle('ribbon__arrow_visible');
-        } else if (!arrowLeft.classList.contains('ribbon__arrow_visible')) {
-          arrowRight.classList.toggle('ribbon__arrow_visible');
-        }
       }
-
-    });
-
-    arrowRight.addEventListener('click', function() {
-      nav.scrollBy(10, 0);
-      scrollLeft = nav.scrollLeft;
-      scrollRight = scrollWidth - scrollLeft - clientWidth;
-
-      if (scrollLeft == 0) {
-        arrowLeft.classList.remove('ribbon__arrow_visible');
-        arrowRight.classList.add('ribbon__arrow_visible');
-      } else if (scrollRight == 0) {
-        arrowRight.classList.remove('ribbon__arrow_visible');
+      if (scrollRight < 1) {
         arrowLeft.classList.add('ribbon__arrow_visible');
-      } else {
-        if (!arrowLeft.classList.contains('ribbon__arrow_visible')) {
-          arrowLeft.classList.toggle('ribbon__arrow_visible');
-        } else if (!arrowRight.classList.contains('ribbon__arrow_visible')) {
-          arrowRight.classList.toggle('ribbon__arrow_visible');
-        }
+        arrowRight.classList.remove('ribbon__arrow_visible');
       }
-    });
+    }
+  }
+
+  chooseCat(event) {
+    event.preventDefault;
+
+    let item = event.target.closest('.ribbon__item');
+
+    if (item) {
+      let arr = this.elem.querySelectorAll('.ribbon__item');
+
+      arr.forEach(function(el) {
+        if (el.classList.contains('ribbon__item_active')) {
+          el.classList.remove('ribbon__item_active');
+        }
+      });
+      item.classList.add('ribbon__item_active');
+
+      this.elem.dispatchEvent(new CustomEvent('ribbon-select', {
+        detail: item.getAttribute('data-id'),
+        bubbles: true
+      }));
+    }
   }
 }
 
