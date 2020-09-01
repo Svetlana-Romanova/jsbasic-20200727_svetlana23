@@ -4,7 +4,7 @@ export default class RibbonMenu {
   constructor(categories) {
     this.categories = categories;
     this.elem = document.createElement('div');
-    
+
     this.render(categories);
     this.scroll(this.elem);
     this.elem.addEventListener('click', (event) => this.chooseCat(event));
@@ -68,7 +68,7 @@ export default class RibbonMenu {
   }
 
   chooseCat(event) {
-    event.preventDefault;
+    event.preventDefault();
 
     let item = event.target.closest('.ribbon__item');
 
