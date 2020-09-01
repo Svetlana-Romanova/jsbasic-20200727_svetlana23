@@ -4,6 +4,7 @@ export default class Modal {
   constructor() {
     this.elem = this.createModal();
     this.closeX();
+    this.closeEsc(this.elem);
   }
 
   createModal() {
@@ -23,21 +24,16 @@ export default class Modal {
       </div>
     </div>`;
 
+    return modal;
+  }
+
+  open() {
     let btn = document.querySelector('.button');
     btn.addEventListener('click', () => {
       let body = document.querySelector('body');
       body.append(this.elem);
       body.classList.add('is-modal-open');
     });
-
-    return modal;
-
-  }
-
-  open() {
-    let body = document.querySelector('body');
-    body.append(this.elem);
-    body.classList.add('is-modal-open');
   }
 
   setTitle(title) {
@@ -60,5 +56,15 @@ export default class Modal {
   closeX() {
     let close = this.elem.querySelector('.modal__close');
     close.addEventListener('click', () => this.close());
+  }
+
+  closeEsc(elem) {
+    let body = document.querySelector('body');
+    body.addEventListener('keydown', function(event) {
+      if (event.code == 'Escape') {
+        elem.remove();
+        body.classList.remove('.is-modal-open');
+      }
+    });
   }
 }
