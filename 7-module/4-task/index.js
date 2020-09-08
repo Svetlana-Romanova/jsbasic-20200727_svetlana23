@@ -105,11 +105,14 @@ export default class StepSlider {
         elem.classList.remove('slider_dragging');
         document.removeEventListener('pointermove', calcPercent);
         document.onpointerup = null;
-        elem.dispatchEvent(new CustomEvent('slider-change', {
-          detail: this.value,
-          bubbles: true
-        }));
       };
     });
+  }
+
+  generateEvent() {
+    this.elem.dispatchEvent(new CustomEvent('slider-change', {
+      detail: this.value,
+      bubbles: true
+    }));
   }
 }
